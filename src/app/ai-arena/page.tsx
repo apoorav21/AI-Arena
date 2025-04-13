@@ -145,7 +145,7 @@ async function getAIResponse(model: string, prompt: string): Promise<string> {
             "Authorization": `Bearer ${process.env.NEXT_PUBLIC_MISTRAL_API_KEY}`,
           },
           body: JSON.stringify({
-            model: "mistral-small-250",
+            model: "Mistral-small",
             messages: [{ role: "user", content: prompt }],
             max_tokens: 150,
           }),

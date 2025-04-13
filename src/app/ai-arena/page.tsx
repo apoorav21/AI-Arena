@@ -112,9 +112,12 @@ async function getAIResponse(model: string, prompt: string): Promise<string> {
           const errorMessage = errorData.error ? `DeepSeek API error: ${errorData.error.message}` : `DeepSeek API error: ${deepseekResponse.statusText}`;
           throw new Error(errorMessage);
         }
+        function cleanDeepSeekResponse(text: string): string {
+          return text.replace(/<think>[\s\S]*?<\/think>/i, '').trim();
+        }
 
         const deepseekData = await deepseekResponse.json();
-        return deepseekData.choices[0].message.content.trim();
+        return cleanDeepSeekResponse(deepseekData.choices[0].message.content.trim());
       case "Llama":
         const llamaResponse = await fetch("https://models.inference.ai.azure.com/chat/completions", {
           method: "POST",

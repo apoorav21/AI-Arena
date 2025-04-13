@@ -10,7 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import { RefreshCw } from "lucide-react";
 import { addVote } from "@/lib/firebaseActions";
 
-const MODELS = ["OpenAI", "Cohere", "Gemini", "DeepSeek R1", "Llama", "Mistral Small v3"];
+const MODELS = ["OpenAI", "Cohere", "Gemini", "DeepSeek R1", "Llama"];
 
 async function getAIResponse(model: string, prompt: string): Promise<string> {
   try {
@@ -137,28 +137,6 @@ async function getAIResponse(model: string, prompt: string): Promise<string> {
 
         const llamaData = await llamaResponse.json();
         return llamaData.choices[0].message.content.trim();
-      case "Mistral Small v3":
-        const mistralResponse = await fetch("https://api.mistral.ai/v1/chat/completions", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${process.env.NEXT_PUBLIC_MISTRAL_API_KEY}`,
-          },
-          body: JSON.stringify({
-            model: "Mistral-small",
-            messages: [{ role: "user", content: prompt }],
-            max_tokens: 150,
-          }),
-        });
-
-        if (!mistralResponse.ok) {
-          const errorData = await mistralResponse.json();
-          const errorMessage = errorData.error ? `Mistral API error: ${errorData.error.message}` : `Mistral API error: ${mistralResponse.statusText}`;
-          throw new Error(errorMessage);
-        }
-
-        const mistralData = await mistralResponse.json();
-        return mistralData.choices[0].message.content.trim();
       default:
         return "Model not supported.";
     }
